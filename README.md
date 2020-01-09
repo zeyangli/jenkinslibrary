@@ -28,3 +28,4 @@
 - 公众号： devopsadmin   DevOps持续集成
 - 微信号： proc_code
 - 邮箱： 610556220@qq.com
+- JenkinsPipeine2.0 文档 http://zeyangli.github.io
