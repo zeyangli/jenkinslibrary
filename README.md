@@ -7,7 +7,11 @@
 本共享库是《DevOps流水线最佳实践》教程产出，涵盖基本的构建、部署、发布工具集成。
 
 
-
+## 主要功能
+- Gitlab系统集成
+- Jira系统集成
+- Kubernetes系统集成
+- Nexus、Artifactory集成
 
 
 ## 使用说明
