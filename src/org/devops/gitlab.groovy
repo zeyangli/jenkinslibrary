@@ -16,6 +16,32 @@ def HttpReq(reqType,reqUrl,reqBody){
     return result
 }
 
+
+//更新文件内容
+def UpdateRepoFile(projectId,filePath,fileContent){
+    apiUrl = "projects/${projectId}/repository/files/${filePath}"
+    reqBody = """{"branch": "master","encoding":"base64", "content": "${fileContent}", "commit_message": "update a new file"}"""
+    response = HttpReq('PUT',apiUrl,reqBody)
+    println(response)
+
+}
+
+//获取文件内容
+def GetRepoFile(projectId,filePath){
+    apiUrl = "projects/${projectId}/repository/files/${filePath}/raw?ref=master"
+    response = HttpReq('GET',apiUrl,'')
+    return response.content
+}
+
+//创建仓库文件
+def CreateRepoFile(projectId,filePath,fileContent){
+    apiUrl = "projects/${projectId}/repository/files/${filePath}"
+    reqBody = """{"branch": "master","encoding":"base64", "content": "${fileContent}", "commit_message": "create a new file"}"""
+    response = HttpReq('POST',apiUrl,reqBody)
+    println(response)
+}
+
+
 //更改提交状态
 def ChangeCommitStatus(projectId,commitSha,status){
     commitApi = "projects/${projectId}/statuses/${commitSha}?state=${status}"
@@ -65,6 +91,7 @@ def CreateMr(projectId,sourceBranch,targetBranch,title,assigneeUser=""){
         def mrUrl = "projects/${projectId}/merge_requests"
         def reqBody = """{"source_branch":"${sourceBranch}", "target_branch": "${targetBranch}","title":"${title}","assignee_id":"${assigneeUser}"}"""
         response = HttpReq("POST",mrUrl,reqBody).content
+        return response
     } catch(e){
         println(e)
     }
@@ -91,4 +118,10 @@ def SearchProjectBranches(projectId,searchKey){
         }
         return branches
     }
+}
+
+//允许合并
+def AcceptMr(projectId,mergeId){
+    def apiUrl = "projects/${projectId}/merge_requests/${mergeId}/merge"
+    HttpReq('PUT',apiUrl,'')
 }

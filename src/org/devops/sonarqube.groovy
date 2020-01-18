@@ -2,7 +2,7 @@ package org.devops
 
 
 //scan
-def SonarScan(sonarServer,projectName,projectDesc,projectPath){
+def SonarScan(sonarServer,projectName,projectDesc,projectPath,branchName){
     
     //定义服务器列表
     def servers = ["test":"sonarqube-test","prod":"sonarqube-prod"]
@@ -20,7 +20,7 @@ def SonarScan(sonarServer,projectName,projectDesc,projectPath){
             -Dsonar.projectName=${projectName} -Dsonar.projectVersion=${sonarDate} -Dsonar.ws.timeout=30 \
             -Dsonar.projectDescription=${projectDesc} -Dsonar.links.homepage=http://www.baidu.com \
             -Dsonar.sources=${projectPath} -Dsonar.sourceEncoding=UTF-8 -Dsonar.java.binaries=target/classes \
-            -Dsonar.java.test.binaries=target/test-classes -Dsonar.java.surefire.report=target/surefire-reports 
+            -Dsonar.java.test.binaries=target/test-classes -Dsonar.java.surefire.report=target/surefire-reports  -Dsonar.branch.name=${branchName} -X
 
         """
     }
