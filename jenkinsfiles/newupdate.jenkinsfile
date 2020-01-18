@@ -1,0 +1,106 @@
+#!groovy 
+
+@Library("jenkinslibrary@master") _ 
+
+String updateType = "${env.updateType}"
+String releaseVersion = "${env.releaseVersion}"
+
+def tools = new org.devops.tools()
+def gitlab = new org.devops.gitlab()
+def k8s = new org.devops.kubernetes()
+
+pipeline{
+    agent { node { label "build"}}
+    
+    stages{
+        stage("UAT->STAG"){
+            when {
+                environment name: 'updateType', value: 'UAT -> STAG' 
+            }
+            
+            steps {
+                script{
+                   tools.PrintMes("UAT -> STAG","green")
+                   
+                   //获取UAT文件中的images
+                   
+                    response = gitlab.GetRepoFile(7,"demo-uat%2f${releaseVersion}-uat.yaml")
+                    fileData = readYaml text: """${response}"""
+                    uatImage = fileData["spec"]["template"]["spec"]["containers"][0]["image"]
+                    tools.PrintMes("UAT IMAGES --> ${uatImage}","green")
+
+                   //获取最新STAG环境的deployment
+                    stagResponse = k8s.GetDeployment("demo-stag","demoapp")
+                    stagResponse = stagResponse.content
+                    
+                    //获取镜像和version
+                    stagfileData = readYaml text: """${stagResponse}"""
+                    stagOldImage = stagfileData["spec"]["template"]["spec"]["containers"][0]["image"]
+                    stagOldVersion = stagfileData["metadata"]["resourceVersion"]
+                    
+                    //更新镜像和version
+                    tools.PrintMes("STAG OLD IMAGES --> ${stagOldImage}","green")
+                    stagResponse = stagResponse.replace(stagOldImage,uatImage)
+                    stagResponse = stagResponse.replace(stagOldVersion,"")
+
+                    //生成最新的STAG版本文件
+                    //文件转换
+                    base64Content = stagResponse.bytes.encodeBase64().toString()
+                    //上传文件
+                    try {
+                        gitlab.CreateRepoFile(7,"demo-stag%2f${releaseVersion}-stag.yaml",base64Content)
+                    } catch(e){
+                        gitlab.UpdateRepoFile(7,"demo-stag%2f${releaseVersion}-stag.yaml",base64Content)
+                    }
+
+                }
+            }
+        }
+    
+    
+    
+    stage("STAG->PROD"){
+            when {
+                environment name: 'updateType', value: 'STAG -> PROD' 
+            }
+            
+            steps {
+                script{
+                   tools.PrintMes("STAG -> PROD","green")
+                   
+                   //获取STAG文件中的images
+                   
+                    response = gitlab.GetRepoFile(7,"demo-stag%2f${releaseVersion}-stag.yaml")
+                    fileData = readYaml text: """${response}"""
+                    stagImage = fileData["spec"]["template"]["spec"]["containers"][0]["image"]
+                    tools.PrintMes("STAG IMAGES --> ${stagImage}","green")
+
+                   //获取最新PROD环境的deployment
+                    prodResponse = k8s.GetDeployment("demo-prod","demoapp")
+                    prodResponse = prodResponse.content
+                    
+                    //获取镜像和version
+                    prodfileData = readYaml text: """${prodResponse}"""
+                    prodOldImage = prodfileData["spec"]["template"]["spec"]["containers"][0]["image"]
+                    prodOldVersion = prodfileData["metadata"]["resourceVersion"]
+                    
+                    //更新镜像和version
+                    tools.PrintMes("PROD OLD IMAGES --> ${prodOldImage}","green")
+                    prodResponse = prodResponse.replace(prodOldImage,stagImage)
+                    prodResponse = prodResponse.replace(prodOldVersion,"")
+
+                    //生成最新的PROD版本文件
+                    //文件转换
+                    base64Content = prodResponse.bytes.encodeBase64().toString()
+                    //上传文件
+                    try {
+                        gitlab.CreateRepoFile(7,"demo-prod%2f${releaseVersion}-prod.yaml",base64Content)
+                    } catch(e){
+                        gitlab.UpdateRepoFile(7,"demo-prod%2f${releaseVersion}-prod.yaml",base64Content)
+                    }
+
+                }
+            }
+        }
+    }
+}

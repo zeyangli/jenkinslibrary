@@ -1,0 +1,36 @@
+#!groovy
+
+@Library("jenkinslibrary@master") _
+
+def nexus = new org.devops.nexus()
+def nexusapi = new org.devops.nexusapi()
+
+String updateType = "${env.updateType}"
+String artifactUrl = "${env.artifactUrl}"
+String pkgVersion = "${env.pkgVersion}"
+
+
+
+
+pipeline{
+    agent{ node { label "build"}}
+    
+    stages{
+    
+        stage("UpdateArtifact"){
+            steps{
+                script{
+                   //nexus.ArtifactUpdate(updateType,artifactUrl)
+                   
+                   //nexusapi.GetRepoComponents("maven-hostd")
+                   nexusapi.GetSingleComponents("maven-hostd","com.mycompany.app","my-app",pkgVersion)
+                
+                }
+            
+            }
+        
+        }
+    }
+
+
+}
