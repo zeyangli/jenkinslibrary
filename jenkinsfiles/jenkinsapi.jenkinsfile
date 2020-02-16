@@ -1,0 +1,27 @@
+
+@Library("jenkinslibrary@master") _
+
+def jenkinsapi = new org.devops.jenkinsapi()
+
+String projectName = "${env.projectName}"
+String manageOpts = "${env.manageOpts}"
+
+pipeline {
+    
+    agent { node {label "master"}}
+    
+    stages{
+        stage("test"){
+            steps{
+                script{
+                    
+                    if (manageOpts == "CreateProject"){
+                        jenkinsapi.CreateProject(projectName)
+                    } else {
+                        jenkinsapi.Project(projectName,manageOpts)
+                    }
+                }
+            }
+        }
+    }
+}
