@@ -1,0 +1,1392 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Provides build health stats for each repo in an org",
+  "editable": true,
+  "gnetId": 10557,
+  "graphTooltip": 0,
+  "id": 3,
+  "iteration": 1581816246859,
+  "links": [],
+  "panels": [
+    {
+      "aliasColors": {
+        "Failed": "#f53636",
+        "Interruped": "#ed8128",
+        "Passed": "#32ac2d"
+      },
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "InfluxDB",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 7,
+        "x": 0,
+        "y": 0
+      },
+      "id": 11,
+      "interval": null,
+      "legend": {
+        "percentage": true,
+        "show": false,
+        "values": true
+      },
+      "legendType": "Under graph",
+      "links": [],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "options": {},
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "alias": "Passed",
+          "groupBy": [],
+          "measurement": "job",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT count(\"build_id\") FROM \"$bussiness\" WHERE (\"project_name\" =~ /^$job$/ AND  \"build_result\" = 1) ",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "jobtime"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "count"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "owner",
+              "operator": "=~",
+              "value": "/^$folder$/"
+            },
+            {
+              "condition": "AND",
+              "key": "repo",
+              "operator": "=~",
+              "value": "/^$job$/"
+            },
+            {
+              "condition": "AND",
+              "key": "result",
+              "operator": "=",
+              "value": "CompletedSuccess"
+            }
+          ]
+        },
+        {
+          "alias": "Failed",
+          "groupBy": [],
+          "measurement": "job",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT count(\"build_id\") FROM \"$bussiness\" WHERE (\"project_name\" =~ /^$job$/ AND  \"build_result\" = 0) ",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "jobtime"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "count"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "owner",
+              "operator": "=~",
+              "value": "/^$folder$/"
+            },
+            {
+              "condition": "AND",
+              "key": "repo",
+              "operator": "=~",
+              "value": "/^$job$/"
+            },
+            {
+              "condition": "AND",
+              "key": "result",
+              "operator": "=",
+              "value": "CompletedError"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Overall",
+      "type": "grafana-piechart-panel",
+      "valueName": "total"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "datasource": "InfluxDB",
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 7,
+        "y": 0
+      },
+      "id": 2,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "repeat": null,
+      "repeatDirection": "h",
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "groupBy": [],
+          "hide": false,
+          "measurement": "job",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT count(\"build_id\") FROM \"$bussiness\" WHERE (\"project_name\" =~ /^$job$/ )",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "jobtime"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "count"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "owner",
+              "operator": "=~",
+              "value": "/^$folder$/"
+            },
+            {
+              "condition": "AND",
+              "key": "repo",
+              "operator": "=~",
+              "value": "/^$job$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": "",
+      "title": "总构建次数",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [],
+      "valueName": "total"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "datasource": "InfluxDB",
+      "format": "s",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 12,
+        "y": 0
+      },
+      "id": 4,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "groupBy": [],
+          "measurement": "job",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT \"build_time\"  / 1000 FROM \"$bussiness\" WHERE (\"project_name\" =~ /^$job$/)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "jobtime"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+                  " / 1000"
+                ],
+                "type": "math"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "owner",
+              "operator": "=~",
+              "value": "/^$folder$/"
+            },
+            {
+              "condition": "AND",
+              "key": "repo",
+              "operator": "=~",
+              "value": "/^$job$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": "",
+      "title": "平均构建时间",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "InfluxDB",
+      "description": "最后一次单元测试结果",
+      "gridPos": {
+        "h": 4,
+        "w": 7,
+        "x": 17,
+        "y": 0
+      },
+      "id": 18,
+      "links": [],
+      "options": {
+        "displayMode": "lcd",
+        "fieldOptions": {
+          "calcs": [
+            "last"
+          ],
+          "defaults": {
+            "decimals": 2,
+            "mappings": [],
+            "max": 1,
+            "min": 0,
+            "thresholds": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ],
+            "title": "",
+            "unit": "percentunit"
+          },
+          "override": {},
+          "values": false
+        },
+        "orientation": "horizontal"
+      },
+      "pluginVersion": "6.5.3",
+      "targets": [
+        {
+          "alias": "Passed",
+          "groupBy": [],
+          "measurement": "tests",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"tests_passed\")  / (tests_passed + tests_skipped + tests_failed) FROM \"$bussiness\" WHERE (\"project_name\" =~ /^$job$/)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "passed"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  " / (passed + skipped + failed)"
+                ],
+                "type": "math"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "owner",
+              "operator": "=~",
+              "value": "/^$folder$/"
+            },
+            {
+              "condition": "AND",
+              "key": "repo",
+              "operator": "=~",
+              "value": "/^$job$/"
+            }
+          ]
+        },
+        {
+          "alias": "Skipped",
+          "groupBy": [],
+          "measurement": "tests",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"tests_skipped\")  / (tests_passed + tests_skipped + tests_failed) FROM \"$bussiness\" WHERE (\"project_name\" =~ /^$job$/)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "skipped"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  " / (passed + skipped + failed)"
+                ],
+                "type": "math"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "owner",
+              "operator": "=~",
+              "value": "/^$folder$/"
+            },
+            {
+              "condition": "AND",
+              "key": "repo",
+              "operator": "=~",
+              "value": "/^$job$/"
+            }
+          ]
+        },
+        {
+          "alias": "Failed",
+          "groupBy": [],
+          "measurement": "tests",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"tests_failed\")  / (tests_passed + tests_skipped + tests_failed) FROM \"$bussiness\" WHERE (\"project_name\" =~ /^$job$/)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "failed"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  " / (passed + skipped + failed)"
+                ],
+                "type": "math"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "owner",
+              "operator": "=~",
+              "value": "/^$folder$/"
+            },
+            {
+              "condition": "AND",
+              "key": "repo",
+              "operator": "=~",
+              "value": "/^$job$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "单元测试",
+      "type": "bargauge"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": true,
+      "colorPrefix": false,
+      "colorValue": false,
+      "colors": [
+        "#f53636",
+        "rgba(237, 129, 40, 0.89)",
+        "#32ac2d"
+      ],
+      "datasource": "InfluxDB",
+      "decimals": null,
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 7,
+        "y": 4
+      },
+      "id": 9,
+      "interval": "",
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "repeatDirection": "h",
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "groupBy": [],
+          "measurement": "job",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"build_result\") FROM \"$bussiness\" WHERE (\"project_name\" =~ /^$job$/)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "passed"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "owner",
+              "operator": "=~",
+              "value": "/^$folder$/"
+            },
+            {
+              "condition": "AND",
+              "key": "repo",
+              "operator": "=~",
+              "value": "/^$job$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": "0.5,1",
+      "title": "最后一次构建状态",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "FAILURE",
+          "value": "0"
+        },
+        {
+          "op": "=",
+          "text": "SUCCESS",
+          "value": "1"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "datasource": "InfluxDB",
+      "decimals": 2,
+      "defaultColor": "rgb(117, 117, 117)",
+      "description": "This graph shows the percentage change of build duration between the latest run and the first one. The graph will be green if value <= 0; yellow if 0 < value <= 25; and red if value > 25",
+      "displayValue": "value",
+      "format": "ms",
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 12,
+        "y": 4
+      },
+      "id": 16,
+      "linkIndex": "0",
+      "links": [],
+      "numberSize": "14px",
+      "options": {},
+      "percentSize": "30px",
+      "targets": [
+        {
+          "groupBy": [],
+          "measurement": "job",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT \"build_time\" FROM \"$bussiness\" WHERE (\"project_name\" =~ /^$job$/ )",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "jobtime"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "owner",
+              "operator": "=~",
+              "value": "/^$folder$/"
+            },
+            {
+              "condition": "AND",
+              "key": "repo",
+              "operator": "=~",
+              "value": "/^$job$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [
+        {
+          "color": "#f53636",
+          "value": "25"
+        },
+        {
+          "color": "#ed8128",
+          "value": "1"
+        },
+        {
+          "color": "#32ac2d",
+          "value": "-100"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Duration Trend",
+      "titleSize": "13px",
+      "type": "btplc-trend-box-panel"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "InfluxDB",
+      "description": "最后一个测试覆盖率结果",
+      "gridPos": {
+        "h": 4,
+        "w": 7,
+        "x": 17,
+        "y": 4
+      },
+      "id": 24,
+      "links": [],
+      "options": {
+        "displayMode": "lcd",
+        "fieldOptions": {
+          "calcs": [
+            "last"
+          ],
+          "defaults": {
+            "decimals": 1,
+            "mappings": [],
+            "max": 100,
+            "min": 0,
+            "thresholds": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 60
+              },
+              {
+                "color": "green",
+                "value": 85
+              }
+            ],
+            "title": "",
+            "unit": "percent"
+          },
+          "override": {},
+          "values": false
+        },
+        "orientation": "horizontal"
+      },
+      "pluginVersion": "6.5.3",
+      "targets": [
+        {
+          "alias": "Classes",
+          "groupBy": [],
+          "measurement": "coverage",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"classes\") FROM \"coverage\" WHERE (\"owner\" =~ /^$folder$/ AND \"repo\" =~ /^$job$/) AND $timeFilter",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "classes"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "owner",
+              "operator": "=~",
+              "value": "/^$folder$/"
+            },
+            {
+              "condition": "AND",
+              "key": "repo",
+              "operator": "=~",
+              "value": "/^$job$/"
+            }
+          ]
+        },
+        {
+          "alias": "Lines",
+          "groupBy": [],
+          "measurement": "coverage",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"lines\") FROM \"coverage\" WHERE (\"owner\" =~ /^$folder$/ AND \"repo\" =~ /^$job$/) AND $timeFilter",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "lines"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "owner",
+              "operator": "=~",
+              "value": "/^$folder$/"
+            },
+            {
+              "condition": "AND",
+              "key": "repo",
+              "operator": "=~",
+              "value": "/^$job$/"
+            }
+          ]
+        },
+        {
+          "alias": "Branches",
+          "groupBy": [],
+          "measurement": "coverage",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"conditionals\") FROM \"coverage\" WHERE (\"owner\" =~ /^$folder$/ AND \"repo\" =~ /^$job$/) AND $timeFilter",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "conditionals"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "owner",
+              "operator": "=~",
+              "value": "/^$folder$/"
+            },
+            {
+              "condition": "AND",
+              "key": "repo",
+              "operator": "=~",
+              "value": "/^$job$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "测试结果",
+      "type": "bargauge"
+    },
+    {
+      "columns": [],
+      "datasource": "InfluxDB",
+      "description": "构建信息",
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "id": 14,
+      "links": [],
+      "options": {},
+      "pageSize": 5,
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": 0,
+        "desc": true
+      },
+      "styles": [
+        {
+          "alias": "Time",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "alias": "项目名称",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "link": true,
+          "linkTargetBlank": true,
+          "linkTooltip": "Click to go to Jenkins",
+          "linkUrl": "http://192.168.1.200:30080/job/${__cell_1:raw}",
+          "mappingType": 1,
+          "pattern": "project_name",
+          "preserveFormat": false,
+          "sanitize": false,
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "alias": "项目构建ID",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "build_number",
+          "thresholds": [
+            "0",
+            "2"
+          ],
+          "type": "string",
+          "unit": "short",
+          "valueMaps": []
+        },
+        {
+          "alias": "构建时间",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "build_time",
+          "thresholds": [],
+          "type": "number",
+          "unit": "ms"
+        },
+        {
+          "alias": "构建结果",
+          "colorMode": "row",
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "link": false,
+          "mappingType": 1,
+          "pattern": "build_result",
+          "thresholds": [
+            "0.5",
+            "1"
+          ],
+          "type": "string",
+          "unit": "short",
+          "valueMaps": [
+            {
+              "text": "SUCCESS",
+              "value": "1"
+            },
+            {
+              "text": "FAILURE",
+              "value": "0"
+            }
+          ]
+        },
+        {
+          "alias": "构建描述",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "build_desc",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "alias": "构建节点",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "build_agent_name",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "groupBy": [],
+          "measurement": "job",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT \"project_name\", \"build_number\", \"build_time\",\"build_agent_name\", \"build_result\", \"build_desc\" FROM \"$bussiness\" WHERE (\"project_name\" =~ /^$job$/ )",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "time"
+                ],
+                "type": "field"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "jobname"
+                ],
+                "type": "field"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "trigger"
+                ],
+                "type": "field"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "jobtime"
+                ],
+                "type": "field"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "joburl"
+                ],
+                "type": "field"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "passed"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "owner",
+              "operator": "=~",
+              "value": "/^$folder$/"
+            },
+            {
+              "condition": "AND",
+              "key": "repo",
+              "operator": "=~",
+              "value": "/^$job$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "构建详情",
+      "transform": "table",
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "id": 20,
+      "panels": [],
+      "title": "Duration",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "InfluxDB",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "hiddenSeries": false,
+      "id": 8,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "hideZero": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": false,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "#$tag_build_number",
+          "groupBy": [
+            {
+              "params": [
+                "buildnumber"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "job",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT \"build_time\" FROM \"$bussiness\" WHERE (\"project_name\" =~ /^$job$/ )  GROUP BY \"build_number\"  ORDER by \"time\" ",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "jobtime"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "owner",
+              "operator": "=~",
+              "value": "/^$folder$/"
+            },
+            {
+              "condition": "AND",
+              "key": "repo",
+              "operator": "=~",
+              "value": "/^$job$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "构建持续时间",
+      "tooltip": {
+        "shared": false,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "series",
+        "name": null,
+        "show": true,
+        "values": [
+          "total"
+        ]
+      },
+      "yaxes": [
+        {
+          "format": "ms",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 21,
+  "style": "dark",
+  "tags": [
+    "devops",
+    "jenkins",
+    "dev",
+    "in-progress"
+  ],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "test",
+          "value": "test"
+        },
+        "datasource": "InfluxDB",
+        "definition": "show measurements",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Folder",
+        "multi": false,
+        "name": "bussiness",
+        "options": [],
+        "query": "show measurements",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": true,
+          "text": "test-indluxdb-service",
+          "value": "test-indluxdb-service"
+        },
+        "datasource": "InfluxDB",
+        "definition": "select project_name from $bussiness",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Job",
+        "multi": false,
+        "name": "job",
+        "options": [],
+        "query": "select project_name from $bussiness",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-7d",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "",
+  "title": "Jenkins Build Status",
+  "uid": "000000005",
+  "version": 47
+}
