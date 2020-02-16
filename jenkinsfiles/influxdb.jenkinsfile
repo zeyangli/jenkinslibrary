@@ -1,0 +1,45 @@
+pipeline {
+    agent { node { label "build"}}
+    
+    stages{
+        stage("test"){
+            
+            steps{
+                
+                script{
+                        measurementName = "${JOB_NAME}".split("-")[0]
+    SERVICE_NAME = "${JOB_NAME}"
+    BUILD_AGENT = "master"
+    BUILD_RESULT = ["SUCCESS":1,"FAILURE":0]["${currentBuild.currentResult}"]
+    currentBuild.description = "Trigger By zeyang"
+    
+    httpRequest httpMode: 'POST', 
+                requestBody: """${measurementName},build_number=${BUILD_ID},build_agent_name=${BUILD_AGENT} project_name=\"${SERVICE_NAME}\",build_id=${BUILD_ID},build_time=${currentBuild.duration},build_result=${BUILD_RESULT},build_desc=\"${currentBuild.description}\",tests_passed=10,tests_failed=2,tests_skipped=3 1434055564000000000""", 
+                url: 'http://192.168.1.200:30086/write?db=jenkins'
+                }
+            }
+        }
+        
+        
+    }
+    
+    post{
+        
+        
+        success{
+            script{
+                currentBuild.description = "Trigger by zeyang"
+                
+                /*influxDbPublisher  customPrefix: '', 
+                                        customProjectName: "${JOB_NAME}",
+                                        jenkinsEnvParameterField: "tests_passed=" + 10 + "\ntests_skipped=" + 2 + "\ntests_failed=" + 3, // OPTIONAL, 自定义字段
+                                        measurementName: "${JOB_NAME.split('-')[0]}", // OPTIONAL, 表名称
+                                        jenkinsEnvParameterTag: 'build_number=${BUILD_ID}', 
+                                        selectedTarget: 'influxdb'*/
+                    
+            }
+        }
+    }
+}
+
+ 
